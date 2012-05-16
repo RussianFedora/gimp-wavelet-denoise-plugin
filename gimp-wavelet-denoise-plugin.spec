@@ -9,6 +9,7 @@ Source0:        http://registry.gimp.org/files/wavelet-denoise-%{version}.tar.gz
 
 BuildRequires:  gimp-devel >= 2.4.0
 BuildRequires:  pkgconfig
+BuildRequires:  gettext
 
 Requires:       gimp >= 2.4
 

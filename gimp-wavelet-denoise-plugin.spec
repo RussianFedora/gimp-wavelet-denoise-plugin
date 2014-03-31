@@ -1,6 +1,6 @@
 Name:           gimp-wavelet-denoise-plugin
 Version:        0.3.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Gimp wavelet denoise plugin
 
 License:        GPLv2+
@@ -23,34 +23,40 @@ The denoising threshold can be set for each colour channel independently.
 
 %prep
 %setup -q -n wavelet-denoise-%{version}
+sed -i -e 's/CFLAGS.*/& $(shell echo $$CFLAGS)/' src/Makefile
+sed -i 's|gimptool-2.0 --libs)|gimptool-2.0 --libs) -lm|' src/Makefile
+echo '#!/bin/bash' > configure
+chmod +x configure
 
 
 %build
-sed -i 's|gimptool-2.0 --libs)|gimptool-2.0 --libs) -lm|' src/Makefile
-sed -i "s|/usr/share/locale|$RPM_BUILD_ROOT/usr/share/locale|" po/Makefile
+%configure
 make %{?_smp_mflags}
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
 GIMP_PLUGINS_DIR=`gimptool-2.0 --gimpplugindir`
-mkdir -p $RPM_BUILD_ROOT$GIMP_PLUGINS_DIR/plug-ins
-install src/wavelet-denoise $RPM_BUILD_ROOT$GIMP_PLUGINS_DIR/plug-ins
-mkdir -p $RPM_BUILD_ROOT/usr/share/locale/de/LC_MESSAGES
-mkdir -p $RPM_BUILD_ROOT/usr/share/locale/ru/LC_MESSAGES
-mkdir -p $RPM_BUILD_ROOT/usr/share/locale/it/LC_MESSAGES
-mkdir -p $RPM_BUILD_ROOT/usr/share/locale/et/LC_MESSAGES
-mkdir -p $RPM_BUILD_ROOT/usr/share/locale/pl/LC_MESSAGES
+sed -i "s|/usr/share/locale|%{buildroot}%{_datadir}/locale|" po/Makefile
+mkdir -p %{buildroot}$GIMP_PLUGINS_DIR/plug-ins
+install src/wavelet-denoise %{buildroot}$GIMP_PLUGINS_DIR/plug-ins
+mkdir -p %{buildroot}%{_datadir}/locale/de/LC_MESSAGES
+mkdir -p %{buildroot}%{_datadir}/locale/ru/LC_MESSAGES
+mkdir -p %{buildroot}%{_datadir}/locale/it/LC_MESSAGES
+mkdir -p %{buildroot}%{_datadir}/locale/et/LC_MESSAGES
+mkdir -p %{buildroot}%{_datadir}/locale/pl/LC_MESSAGES
 make install po
 %find_lang gimp20-wavelet-denoise-plug-in
 
 
 %files -f gimp20-wavelet-denoise-plug-in.lang
-%doc AUTHORS  ChangeLog  COPYING README
+%doc AUTHORS ChangeLog COPYING README
 %{_libdir}/gimp/2.0/plug-ins/wavelet-denoise
 
 
 
 %changelog
-* Wed May 15 2012 Vasiliy N. Glazov <vascom2@gmail.com> - 0.3.1-1.R
+* Mon Mar 31 2014 Vasiliy N. Glazov <vascom2@gmail.com> - 0.3.1-2
+- Correct CFLAGS
+
+* Tue May 15 2012 Vasiliy N. Glazov <vascom2@gmail.com> - 0.3.1-1
 - initial release

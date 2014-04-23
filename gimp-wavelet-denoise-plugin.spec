@@ -1,6 +1,6 @@
 Name:           gimp-wavelet-denoise-plugin
 Version:        0.3.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Gimp wavelet denoise plugin
 
 License:        GPLv2+
@@ -38,7 +38,7 @@ make %{?_smp_mflags}
 GIMP_PLUGINS_DIR=`gimptool-2.0 --gimpplugindir`
 sed -i "s|/usr/share/locale|%{buildroot}%{_datadir}/locale|" po/Makefile
 mkdir -p %{buildroot}$GIMP_PLUGINS_DIR/plug-ins
-install src/wavelet-denoise %{buildroot}$GIMP_PLUGINS_DIR/plug-ins
+install -m 0644 -p src/wavelet-denoise %{buildroot}$GIMP_PLUGINS_DIR/plug-ins
 mkdir -p %{buildroot}%{_datadir}/locale/de/LC_MESSAGES
 mkdir -p %{buildroot}%{_datadir}/locale/ru/LC_MESSAGES
 mkdir -p %{buildroot}%{_datadir}/locale/it/LC_MESSAGES
@@ -55,6 +55,9 @@ make install po
 
 
 %changelog
+* Wed Apr 23 2014 Vasiliy N. Glazov <vascom2@gmail.com> - 0.3.1-3
+- Correct install parameters
+
 * Mon Mar 31 2014 Vasiliy N. Glazov <vascom2@gmail.com> - 0.3.1-2
 - Correct CFLAGS
 
